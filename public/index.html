@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Modul Ajar — SDIT Ar-Rahmah</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a6b3c;--green-d:#0f4427;--green-l:#e8f5ee;--green-m:#b3ddc2;
+  --gold:#9a6f00;--gold-l:#fdf6e0;--gold-m:#e8c97a;
+  --teal:#0d7377;--teal-l:#e0f5f5;--teal-m:#8dd0d2;
+  --purple:#5b3fa6;--purple-l:#ede8ff;--purple-m:#b8a8e8;
+  --gray-900:#1a1a1a;--gray-700:#404040;--gray-500:#6b6b6b;
+  --gray-300:#d0d0d0;--gray-100:#f3f3f3;--gray-50:#fafafa;
+  --white:#fff;--border:#e2e2e2;
+  --r:8px;--r-lg:14px;--shadow:0 2px 10px rgba(0,0,0,.08);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--gray-100);color:var(--gray-900);font-size:14px;line-height:1.6;min-height:100vh}
+
+.hero{background:linear-gradient(135deg,var(--green-d) 0%,var(--green) 65%,#2d8a5a 100%);color:#fff;padding:24px 20px 22px}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.75;margin-bottom:8px}
+.hero-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.hero-sub{font-size:13px;opacity:.8}
+
+.main{max-width:960px;margin:0 auto;padding:20px 16px 60px;display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:start}
+@media(max-width:740px){.main{grid-template-columns:1fr}}
+
+.sidebar{position:sticky;top:16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow)}
+.card-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.step-num{width:24px;height:24px;border-radius:6px;background:var(--green);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+label{display:block;font-size:12px;font-weight:600;color:var(--gray-700);margin-bottom:5px}
+select,input,textarea{width:100%;font-size:13px;font-family:inherit;color:var(--gray-900);background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:9px 11px;transition:border-color .12s;outline:none}
+select:focus,input:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:68px;line-height:1.5}
+.form-group{margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* CP display */
+.cp-item{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--gray-100)}
+.cp-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.cp-el{font-size:11px;font-weight:700;color:var(--green-d);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.cp-text{font-size:12px;color:var(--gray-700);line-height:1.55}
+
+/* Indikator pills */
+.pilar-section{margin-bottom:13px}
+.pilar-head{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:6px;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.ph-s{background:var(--gold-l);color:var(--gold)}
+.ph-a{background:var(--teal-l);color:var(--teal)}
+.ph-l{background:var(--purple-l);color:var(--purple)}
+.pills-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:5px 10px;border-radius:20px;border:1.5px solid;cursor:pointer;transition:all .12s;user-select:none;line-height:1.3}
+.pill-s{border-color:var(--gold-m);color:var(--gold);background:var(--white)}
+.pill-a{border-color:var(--teal-m);color:var(--teal);background:var(--white)}
+.pill-l{border-color:var(--purple-m);color:var(--purple);background:var(--white)}
+.pill.sel.pill-s{background:var(--gold-l)}
+.pill.sel.pill-a{background:var(--teal-l)}
+.pill.sel.pill-l{background:var(--purple-l)}
+.pill-dot{font-size:12px}
+
+.btn-gen{width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:var(--r-lg);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-gen:hover:not(:disabled){background:var(--green-d)}
+.btn-gen:disabled{opacity:.45;cursor:not-allowed}
+
+/* Output */
+.output{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);min-height:480px;overflow:hidden}
+.out-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;color:var(--gray-500);min-height:480px}
+.out-empty-icon{font-size:44px;margin-bottom:14px;opacity:.35}
+.out-empty-title{font-size:15px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+.out-empty-sub{font-size:12px;line-height:1.7}
+
+.out-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.out-title{font-size:14px;font-weight:700}
+.out-sub{font-size:11px;color:var(--gray-500);margin-top:2px}
+.out-actions{display:flex;gap:7px}
+.btn-act{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:7px 13px;border-radius:var(--r);border:1.5px solid;cursor:pointer;transition:all .12s;white-space:nowrap}
+.btn-cp{background:var(--white);border-color:var(--border);color:var(--gray-700)}
+.btn-cp:hover{background:var(--gray-100)}
+.btn-pr{background:var(--green);border-color:var(--green);color:#fff}
+.btn-pr:hover{background:var(--green-d)}
+
+.out-body{padding:24px 28px;font-size:13.5px;line-height:1.8}
+.out-body h1{font-size:17px;font-weight:700;color:var(--green-d);margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid var(--green-l)}
+.out-body h2{font-size:14px;font-weight:700;color:#1a2744;margin:22px 0 8px;background:var(--gray-50);padding:7px 12px;border-radius:6px;border-left:3px solid var(--green)}
+.out-body h3{font-size:13px;font-weight:700;color:var(--gray-700);margin:14px 0 6px}
+.out-body p{margin:0 0 10px;color:var(--gray-700)}
+.out-body ul,.out-body ol{margin:0 0 10px 22px;color:var(--gray-700)}
+.out-body li{margin-bottom:4px}
+.out-body table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:12.5px}
+.out-body th{background:var(--green-d);color:#fff;padding:8px 12px;text-align:left;font-weight:600}
+.out-body td{padding:7px 12px;border-bottom:1px solid var(--border)}
+.out-body tr:nth-child(even) td{background:var(--gray-50)}
+.out-body strong{color:var(--gray-900)}
+.out-body code{background:var(--gray-100);padding:1px 5px;border-radius:3px;font-size:12px}
+
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;min-height:480px;gap:16px}
+.spin{width:38px;height:38px;border:3px solid var(--green-m);border-top-color:var(--green);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{font-size:13px;color:var(--gray-500);text-align:center;line-height:1.6}
+
+@media print{
+  .hero,.sidebar,#actBtns{display:none!important}
+  .main{display:block}
+  .output{border:none;box-shadow:none}
+  .out-head{border:none;padding:0 0 12px}
+  .out-actions{display:none}
+}
+
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--gray-900);color:#fff;font-size:12px;padding:8px 18px;border-radius:20px;opacity:0;pointer-events:none;transition:all .2s;z-index:999;font-weight:500}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">SDIT Ar-Rahmah Makassar · Generator Administrasi</div>
+    <div class="hero-title">🎓 Generator Modul Ajar</div>
+    <div class="hero-sub">CP 2025 + Leadership Curriculum → Modul Ajar lengkap dalam hitungan detik</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <div class="card-title"><span class="step-num">1</span> Identitas Pembelajaran</div>
+      <div class="form-group">
+        <label>Kelas</label>
+        <select id="selKelas" onchange="onKelasChange()">
+          <option value="">— Pilih Kelas —</option>
+          <option>Kelas I</option><option>Kelas II</option><option>Kelas III</option>
+          <option>Kelas IV</option><option>Kelas V</option><option>Kelas VI</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mata Pelajaran</label>
+        <select id="selMapel" onchange="onMapelChange()">
+          <option value="">— Pilih Mata Pelajaran —</option>
+          <option>PAI & Budi Pekerti</option>
+          <option>Pendidikan Pancasila</option>
+          <option>Bahasa Indonesia</option>
+          <option>Matematika</option>
+          <option>IPAS</option>
+          <option>PJOK</option>
+          <option>Seni & Budaya</option>
+          <option>Bahasa Inggris</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Semester</label>
+          <select id="selSem">
+            <option>Ganjil (1)</option><option>Genap (2)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Alokasi Waktu</label>
+          <input id="inpWaktu" value="2 × 35 menit" placeholder="2 × 35 menit">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Topik / Materi Pokok</label>
+        <input id="inpTopik" placeholder="cth: Bangun Datar Sederhana">
+      </div>
+      <div class="form-group">
+        <label>Tujuan Pembelajaran <span style="font-weight:400;color:var(--gray-500)">(opsional)</span></label>
+        <textarea id="inpTujuan" placeholder="Kosongkan → AI akan generate otomatis"></textarea>
+      </div>
+    </div>
+
+    <!-- STEP 2: CP -->
+    <div class="card" id="cardCP" style="display:none">
+      <div class="card-title"><span class="step-num">2</span> Capaian Pembelajaran</div>
+      <div id="cpBody"></div>
+    </div>
+
+    <!-- STEP 3: Leadership -->
+    <div class="card" id="cardLD" style="display:none">
+      <div class="card-title"><span class="step-num">3</span> Pilih Indikator Leadership</div>
+      <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">Pilih yang relevan dengan topik — bisa dari satu atau beberapa pilar</div>
+      <div id="ldBody"></div>
+    </div>
+
+    <!-- GENERATE -->
+    <button class="btn-gen" id="btnGen" onclick="doGenerate()" disabled>
+      <span id="genIcon">✨</span><span id="genLabel">Generate Modul Ajar</span>
+    </button>
+
+  </div><!-- /sidebar -->
+
+  <!-- OUTPUT -->
+  <div class="output" id="outputBox">
+    <div class="out-empty">
+      <div class="out-empty-icon">📄</div>
+      <div class="out-empty-title">Modul Ajar akan tampil di sini</div>
+      <div class="out-empty-sub">Pilih kelas → mapel → topik<br>Centang indikator Leadership → klik Generate</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── Konstanta URL API ──────────────────────────────────
+const API_URL = '/api/generate';
+
+// ── DATA CP 2025 ───────────────────────────────────────
+const CP = {
+  "PAI & Budi Pekerti":{rows:[
+    {el:"Al-Qur'an Hadis",a:"Mengenal huruf hijaiyah, membaca Surah Al-Fatihah dan surah-surah pendek, menghafal hadis tentang kebersihan.",b:"Membaca surah-surah pendek, menghafal ayat dan hadis tentang salat serta hubungan sosial.",c:"Memahami ayat dan hadis tentang keragaman, menghafal surah dan hadis pilihan."},
+    {el:"Akidah",a:"Mengenal rukun iman, iman kepada Allah, Asmaulhusna, dan mengenal malaikat.",b:"Mengenal sifat-sifat Allah, iman kepada kitab-kitab dan rasul-rasul Allah.",c:"Mendalami Asmaulhusna, memahami iman kepada hari akhir, qada dan qadar."},
+    {el:"Akhlak",a:"Memuji dan menyucikan Allah, mengenal akhlak terpuji terhadap diri sendiri.",b:"Berbaik sangka kepada Allah, berakhlak mulia terhadap orang tua, keluarga, dan pendidik.",c:"Berdoa dan bertawakal kepada Allah, berakhlak terhadap sesama, hewan, dan tumbuhan."},
+    {el:"Fikih",a:"Mengenal rukun Islam, syahadat, bersuci, salat fardu, azan, ikamah, zikir, dan doa.",b:"Memahami puasa, salat Jumat dan salat sunah, konsep balig dan taklif.",c:"Mengenal puasa sunah, zakat, infak, sedekah, serta makanan halal dan haram."},
+    {el:"Sejarah Peradaban Islam",a:"Mengenal kisah-kisah para nabi dan rasul.",b:"Meneladani kisah Nabi Muhammad saw. periode Makkah.",c:"Meneladani kisah Nabi Muhammad saw. periode Madinah dan masa Khulafaurasyidin."}
+  ]},
+  "Pendidikan Pancasila":{rows:[
+    {el:"Pancasila",a:"Mengenal simbol dan sila-sila Pancasila; menerapkan nilai Pancasila di keluarga.",b:"Mengidentifikasi makna sila-sila Pancasila dan penerapannya sehari-hari.",c:"Memahami kronologi lahirnya Pancasila; menguraikan maknanya sebagai dasar negara."},
+    {el:"UUD 1945",a:"Mengenal aturan di lingkungan keluarga.",b:"Mengidentifikasi dan melaksanakan hak dan kewajiban sebagai warga negara.",c:"Menguraikan hak, kewajiban, dan tanggung jawab; memahami sistem pemerintahan Indonesia."},
+    {el:"Bhinneka Tunggal Ika",a:"Mengenal semboyan Bhinneka Tunggal Ika; menghargai identitas diri.",b:"Menunjukkan sikap bangga menjadi anak Indonesia.",c:"Menganalisis keberagaman; menerapkan toleransi dan persatuan."},
+    {el:"NKRI",a:"Mengenal identitas wilayah tempat tinggal.",b:"Mengenal pemerintahan daerah dan pusat.",c:"Memahami wilayah NKRI dan peran Indonesia dalam hubungan internasional."}
+  ]},
+  "Bahasa Indonesia":{rows:[
+    {el:"Menyimak",a:"Menyimak cerita dan instruksi lisan sederhana; merespons dengan tepat.",b:"Memahami informasi dari berbagai jenis teks lisan.",c:"Menganalisis informasi dari teks lisan yang lebih kompleks; membedakan fakta dan opini."},
+    {el:"Membaca",a:"Mengenal huruf dan bunyi; membaca kata dan kalimat sederhana.",b:"Membaca teks narasi, deskripsi, prosedur; mengenali gagasan utama.",c:"Membaca berbagai jenis teks secara kritis; merangkum dan menafsirkan isi."},
+    {el:"Berbicara",a:"Menyampaikan gagasan secara lisan; menceritakan pengalaman pribadi.",b:"Menyampaikan pendapat dan informasi; berdiskusi sederhana.",c:"Menyampaikan gagasan terstruktur dalam diskusi, presentasi, dan debat."},
+    {el:"Menulis",a:"Menulis huruf, kata, dan kalimat sederhana.",b:"Menulis teks narasi, deskripsi, instruksi dengan ejaan yang benar.",c:"Menulis teks eksposisi, narasi, dan argumentasi dengan struktur tepat."},
+    {el:"Menyajikan",a:"Menyajikan informasi sederhana secara lisan maupun tertulis.",b:"Menyajikan hasil pengamatan dalam bentuk lisan, tulisan, atau visual.",c:"Menyajikan informasi penelitian sederhana dalam berbagai format."}
+  ]},
+  "Matematika":{rows:[
+    {el:"Bilangan",a:"Mengenal bilangan cacah sampai 100; operasi penjumlahan dan pengurangan sederhana.",b:"Bilangan cacah hingga 10.000; operasi hitung; pengenalan pecahan sederhana.",c:"Operasi bilangan bulat dan pecahan; KPK dan FPB; perbandingan dan proporsi."},
+    {el:"Geometri",a:"Mengenal bentuk geometri dasar; mengidentifikasi bentuk di lingkungan sekitar.",b:"Mengidentifikasi sifat bangun datar dan ruang; mengenal simetri dan pola.",c:"Menghitung luas dan keliling bangun datar; mengenal bangun ruang dan volumenya."},
+    {el:"Pengukuran",a:"Membandingkan dan mengukur panjang, berat, waktu dengan satuan sederhana.",b:"Mengukur dengan satuan baku; menyelesaikan masalah pengukuran.",c:"Konversi satuan; menyelesaikan masalah dalam konteks kehidupan nyata."},
+    {el:"Statistika",a:"Mengumpulkan dan menyajikan data sederhana dalam tabel dan gambar.",b:"Mengumpulkan, mengelola, dan menyajikan data dalam diagram batang.",c:"Mengolah data dalam diagram; mengenal rata-rata dan modus."}
+  ]},
+  "IPAS":{rows:[
+    {el:"Pemahaman IPA",a:null,b:"Mengamati fenomena alam; mengelompokkan makhluk hidup; memahami siklus sederhana.",c:"Menjelaskan hubungan ekosistem; memahami gaya, gerak, energi; mengenal tata surya."},
+    {el:"Pemahaman IPS",a:null,b:"Mengenal lingkungan sosial, ekonomi, dan budaya; konsep kebutuhan dan keinginan.",c:"Menganalisis interaksi sosial dan ekonomi; memahami kegiatan ekonomi; sejarah lokal."},
+    {el:"Keterampilan Proses",a:null,b:"Melakukan pengamatan, pengukuran, dan percobaan sederhana; menyajikan hasil.",c:"Merancang dan melaksanakan penyelidikan; menganalisis data; menyajikan laporan."}
+  ]},
+  "PJOK":{rows:[
+    {el:"Gerak Dasar",a:"Mempraktikkan keterampilan gerak fundamental.",b:"Menghaluskan keterampilan gerak; mengeksplorasi berbagai strategi gerak.",c:"Menyesuaikan dan mentransfer keterampilan gerak ke situasi baru."},
+    {el:"Aktivitas Fisik",a:"Berpartisipasi aktif dalam permainan sederhana; menunjukkan perilaku sportif.",b:"Menerapkan keterampilan gerak dalam permainan; menunjukkan fair play.",c:"Mengombinasikan keterampilan dalam permainan kompleks; memimpin dalam tim."},
+    {el:"Kebugaran",a:"Mengenal pentingnya aktivitas fisik; mempraktikkan kebiasaan hidup aktif.",b:"Memahami komponen kebugaran jasmani; mempraktikkan latihan rutin.",c:"Merancang program kebugaran sederhana; memahami hubungan aktivitas dan kesehatan."}
+  ]},
+  "Seni & Budaya":{rows:[
+    {el:"Seni Rupa",a:"Mengeksplorasi unsur seni rupa melalui karya sederhana.",b:"Berkreasi karya seni 2D dan 3D; mengenal seni nusantara.",c:"Merancang karya dengan prinsip desain; mengapresiasi seni nasional dan internasional."},
+    {el:"Seni Musik",a:"Mengenal bunyi, irama, lagu sederhana; memainkan alat musik perkusi.",b:"Menyanyikan lagu dengan teknik vokal; memainkan alat musik melodis; mengenal notasi.",c:"Bermusik ansambel; membaca notasi; menciptakan melodi pendek."},
+    {el:"Seni Tari",a:"Mengeksplorasi gerak tubuh; mengenal tari daerah setempat.",b:"Memperagakan tari daerah; berkreasi tari sederhana.",c:"Menarikan tari nusantara; berkreasi koreografi sederhana."},
+    {el:"Seni Teater",a:"Bermain peran sederhana; mengekspresikan ide melalui drama pendek.",b:"Memerankan tokoh dalam drama; mengembangkan ekspresi dan improvisasi.",c:"Merancang dan mementaskan drama pendek; bekerja sama dalam produksi."}
+  ]},
+  "Bahasa Inggris":{rows:[
+    {el:"Menyimak",a:"Mengenali dan merespons kata, frasa, dan instruksi sederhana.",b:"Memahami informasi dari teks lisan sederhana tentang topik familiar.",c:"Memahami dan menginterpretasi informasi dari berbagai teks lisan."},
+    {el:"Berbicara",a:"Mengucapkan kata dan frasa sederhana terkait perkenalan dan sapaan.",b:"Berkomunikasi lisan tentang diri sendiri dan aktivitas sehari-hari.",c:"Menyampaikan pendapat dan pengalaman dengan kalimat lebih kompleks."},
+    {el:"Membaca",a:"Mengenal huruf alfabet dan bunyi; membaca kata sederhana.",b:"Membaca dan memahami teks pendek dengan kosakata yang dipelajari.",c:"Membaca teks lebih panjang; mengenali gagasan utama dan detail pendukung."},
+    {el:"Menulis",a:"Menyalin kata dan kalimat sederhana.",b:"Menulis kalimat dan paragraf pendek tentang topik familiar.",c:"Menulis teks narasi, deskripsi, dan surat sederhana."}
+  ]}
+};
+
+// ── DATA LEADERSHIP ────────────────────────────────────
+const LD = {
+  "Kelas I":{
+    s:[{v:"Salat",i:["Simulasi tata cara wudhu","Menerapkan gerakan shalat yang benar"]},{v:"Ibadah",i:["Makan dengan tangan kanan","Membaca doa sebelum kegiatan"]},{v:"Iman",i:["Menyebutkan makna Iman kepada Allah SWT","Menyebutkan makna Iman kepada Malaikat"]},{v:"Adab & Akhlak",i:["Adab terhadap orang tua dan guru","Menerapkan sikap jujur","Kasih sayang terhadap ciptaan Allah"]},{v:"Peradaban Islam",i:["Kisah Nabi Adam AS dan Nabi Nuh AS"]}],
+    a:[{v:"Literacy",i:["Membaca buku 100–150 kata/hari","Menulis huruf a–z dan 5 kalimat SPOK","Bercerita tentang gambar"]},{v:"Numeracy",i:["Hafal penjumlahan dan pengurangan 1–10","Membilang mundur 20–1"]},{v:"Scientific Literacy",i:["Mengenal melayang, mengapung, tenggelam","Mengenal warna primer dan sekunder"]},{v:"ICT Literacy",i:["Mengenal perangkat komputer (CPU, Keyboard, Monitor)"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Mengenalkan konsep Infaq dan Sedekah"]},{v:"Cultural & Civic",i:["Pengenalan diri dan anggota keluarga","Mengenalkan permainan tradisional"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Percakapan sederhana bahasa Inggris","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Berpikir kritis","Berpikir kreatif dan inovatif"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Realistis menerima diri sendiri"]},{v:"Fast Learning",i:["Pengenalan huruf","Membaca suku kata","Membaca kalimat pendek"]}]
+  },
+  "Kelas II":{
+    s:[{v:"Salat",i:["Mengaplikasikan bacaan shalat","Simulasi tata cara tayammum","Memperagakan tata cara masbuk"]},{v:"Ibadah",i:["Melaksanakan sunnah harian","Membiasakan sedekah"]},{v:"Iman",i:["Makna Iman kepada kitab Allah","Makna Iman kepada Rasul"]},{v:"Adab & Akhlak",i:["Adab kepada sesama muslim","Amanah"]},{v:"Peradaban Islam",i:["Kisah Nabi Musa AS dan Nabi Yusuf AS"]}],
+    a:[{v:"Literacy",i:["Membaca buku 176–250 kata/hari","Menceritakan kembali isi bacaan","Bercerita tentang gambar"]},{v:"Numeracy",i:["Hafal perkalian 1–5","Operasi hitung campuran dua angka","Penjumlahan/pengurangan dengan menyimpan"]},{v:"Scientific Literacy",i:["Mengenal wujud benda dan sifatnya","Percobaan sederhana sehari-hari"]},{v:"ICT Literacy",i:["Mengenal ikon aplikasi Paint","Mengenal fungsi dasar WordPad"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Konsep Infaq dan Sedekah"]},{v:"Cultural & Civic",i:["Simbol Pancasila dalam Garuda","Pengamalan Pancasila sehari-hari"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita","Menjelaskan deskripsi cita-citanya"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Percakapan sederhana bahasa Inggris","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Berpikir kritis","Berpikir kreatif dan inovatif"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Realistis menerima diri sendiri"]},{v:"Fast Learning",i:["Membaca suku kata","Membaca kalimat pendek","Menguasai aplikasi penunjang belajar"]}]
+  },
+  "Kelas III":{
+    s:[{v:"Salat",i:["Membiasakan sadar shalat","Menunjukkan cara qashar dan jamak shalat"]},{v:"Ibadah",i:["Simulasi hafalan doa","Melaksanakan puasa","Mengklasifikasikan makanan halal","Berdzikir"]},{v:"Iman",i:["Makna Iman kepada hari kiamat","Makna Iman kepada Qada dan Qadar"]},{v:"Adab & Akhlak",i:["Adab kepada sesama saudara/hewan","Adab bermajlis","Adab berpakaian","Contoh sikap adil"]},{v:"Peradaban Islam",i:["Kisah 10 sahabat yang dijamin masuk surga"]}],
+    a:[{v:"Literacy",i:["Membaca buku 251–400 kata/hari","Menulis 2 karya tulis (puisi, deskriptif, prosedur)","Menceritakan kembali isi bacaan","Mempresentasikan proyek"]},{v:"Numeracy",i:["Hafal perkalian dan pembagian 1–10","Operasi hitung campuran tiga angka","Perkalian susun pendek tanpa sisa"]},{v:"Scientific Literacy",i:["Berpikir ilmiah sederhana (identifikasi pertanyaan)","Percobaan ciri-ciri makhluk hidup"]},{v:"ICT Literacy",i:["Mempraktikkan pengoperasian komputer langsung"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Konsep Infaq dan Sedekah"]},{v:"Cultural & Civic",i:["Pengamalan Pancasila sehari-hari","Membaca kisah kepahlawanan pejuang Islam"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita","Menjelaskan deskripsi cita-cita","Menjelaskan alasan memilih cita-cita"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Percakapan sederhana bahasa Inggris","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Berpikir kritis","Berpikir kreatif dan inovatif"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Realistis menerima diri sendiri"]},{v:"Fast Learning",i:["Membaca suku kata","Membaca kalimat pendek","Menguasai aplikasi penunjang belajar"]}]
+  },
+  "Kelas IV":{
+    s:[{v:"Salat",i:["Membedakan shalat khusus (gerhana dan istisqa)"]},{v:"Ibadah",i:["Mengaplikasikan hafalan doa harian","Mengemukakan arti zakat","Mempraktikkan haji dan umroh","Melaksanakan puasa Ramadan"]},{v:"Iman",i:["Mengaplikasikan bertutur kata yang baik","Arti orang mukmin tidak berlaku kikir"]},{v:"Adab & Akhlak",i:["Memahami arti dari rasa malu","Menerapkan sikap dermawan"]},{v:"Peradaban Islam",i:["Mengenal tokoh-tokoh saintis muslim"]}],
+    a:[{v:"Literacy",i:["Membaca buku 40–50 halaman/pekan","Menulis cerpen/narasi/fiksi","Menceritakan kembali (bahasa lebih kompleks)"]},{v:"Numeracy",i:["Hafal perkalian dan pembagian 1–10","Penjumlahan dan pengurangan empat angka","Perkalian susun pendek"]},{v:"Scientific Literacy",i:["Berpikir ilmiah (identifikasi pertanyaan, masalah, solusi)","Percobaan perubahan wujud benda"]},{v:"ICT Literacy",i:["Pengenalan aplikasi pembelajaran dan fiturnya"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Mengenal konsep kejahatan finansial (korupsi)"]},{v:"Cultural & Civic",i:["Pengenalan budaya dan suku bangsa","Mencintai produk dalam negeri","Menghargai perbedaan dan keberagaman"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita","Menjelaskan deskripsi cita-cita","Menjelaskan alasan memilih cita-cita","Bisa membuat goal setting"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Percakapan sederhana bahasa Inggris","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Berpikir kritis","Berpikir kreatif dan inovatif"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Realistis menerima diri sendiri"]},{v:"Fast Learning",i:["Kemampuan membaca cepat","Menguasai aplikasi penunjang belajar"]}]
+  },
+  "Kelas V":{
+    s:[{v:"Salat",i:["Mengenal 4 mazhab dalam gerakan shalat"]},{v:"Ibadah",i:["Menerapkan hafalan doa harian","Makna berbakti kepada orang tua","Mengklasifikasikan amar ma'ruf nahi munkar"]},{v:"Iman",i:["Membuktikan berdamai adalah cara terbaik","Kesadaran bahwa Allah mengetahui perbuatan kita"]},{v:"Adab & Akhlak",i:["Contoh sikap sabar","Contoh sikap tawakkal"]},{v:"Peradaban Islam",i:["Mengenal ulama-ulama besar Islam"]}],
+    a:[{v:"Literacy",i:["Membaca buku 70–90 halaman/pekan","Menulis nonfiksi","Memperagakan wartawan/pembawa berita","Mendengarkan nonfiksi (berita)"]},{v:"Numeracy",i:["Hafal perkalian dan pembagian 1–10","Perkalian bilangan desimal","Penjumlahan dan pengurangan empat angka"]},{v:"Scientific Literacy",i:["Berpikir ilmiah lengkap (identifikasi, solusi, merancang)","Percobaan terkait materi Sains Kelas V"]},{v:"ICT Literacy",i:["Menggunakan spreadsheet","Menggunakan Canva"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Mengenal konsep kejahatan finansial (korupsi)"]},{v:"Cultural & Civic",i:["Pengenalan budaya, adat istiadat, sistem pemerintahan","Mencintai produk dalam negeri"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita","Menjelaskan deskripsi cita-cita","Menjelaskan alasan memilih cita-cita","Bisa membuat goal setting","Cara bekerja berbasis tujuan"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Berpikir kritis","Berpikir kreatif dan inovatif"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Tidak membandingkan diri dengan kekurangan orang lain","Menghargai kelebihan orang lain","Memiliki hubungan baik dengan teman sebaya"]},{v:"Fast Learning",i:["Kemampuan membaca cepat","Menguasai aplikasi penunjang belajar"]}]
+  },
+  "Kelas VI":{
+    s:[{v:"Salat",i:["Menunjukkan keutamaan menuntut ilmu"]},{v:"Ibadah",i:["Menerapkan hafalan doa harian"]},{v:"Iman",i:["Setiap orang memikul dosanya sendiri","Menyebutkan contoh kesudahan yang baik","Tanda-tanda kekuasaan Allah"]},{v:"Adab & Akhlak",i:["Menjelaskan arti tawadhu"]},{v:"Peradaban Islam",i:["Mengklasifikasikan sejarah Khulafaurrasyidin"]}],
+    a:[{v:"Literacy",i:["Membaca buku 70–90 halaman/pekan","Menulis nonfiksi","Memperagakan wartawan/pembawa berita"]},{v:"Numeracy",i:["Hafal perkalian dan pembagian 1–10","Operasi hitung campuran bilangan bulat","Operasi hitung pecahan (×÷+−)"]},{v:"Scientific Literacy",i:["Memahami berpikir ilmiah lengkap + karya sains","Percobaan terkait materi Sains Kelas VI"]},{v:"ICT Literacy",i:["Memanfaatkan teknologi secara beretika dan bertanggung jawab"]},{v:"Financial Literacy",i:["Mengenal uang dan fungsinya","Mengenal konsep kejahatan finansial (korupsi)"]},{v:"Cultural & Civic",i:["Konsep NKRI dan Pancasila","Berbagai suku, budaya, dan keberagaman","Identitas diri sebagai anak Indonesia"]}],
+    l:[{v:"Developing Vision",i:["Memiliki pilihan cita-cita","Menjelaskan deskripsi cita-cita","Menjelaskan alasan memilih cita-cita","Bisa membuat goal setting","Cara bekerja berbasis tujuan","Mengevaluasi dan memonitor pencapaian tujuan"]},{v:"Communication",i:["Mengkomunikasikan ide secara jelas","Percakapan sederhana bahasa Inggris","Berkomunikasi secara formal"]},{v:"Problem Solving",i:["Memberikan solusi dari video masalah","Menyelesaikan studi kasus berkelompok","Menyelesaikan tugas tepat waktu"]},{v:"Collaboration",i:["Kerja sama dengan teman sekelas","Bersikap terbuka untuk bekerja sama"]},{v:"Social Skill",i:["Mengenal 5 kata ajaib","Menghargai perbedaan","Realistis menerima diri sendiri"]},{v:"Fast Learning",i:["Membaca dan menelaah isi bacaan","Membuat resume/kesimpulan dari bacaan","Membaca cepat","Membaca karya sastra","Menggunakan aplikasi penunjang pembelajaran"]}]
+  }
+};
+
+const FASE = {"Kelas I":"A","Kelas II":"A","Kelas III":"B","Kelas IV":"B","Kelas V":"C","Kelas VI":"C"};
+const PILAR = [
+  {key:'s',label:'☪ Spiritual Values',head:'ph-s',pill:'pill-s'},
+  {key:'a',label:'📚 Academic',head:'ph-a',pill:'pill-a'},
+  {key:'l',label:'🌟 Leadership Competencies',head:'ph-l',pill:'pill-l'}
+];
+
+let selInds = new Set();
+let busy = false;
+
+// ── Event handlers ─────────────────────────────────────
+function onKelasChange(){
+  const kelas = document.getElementById('selKelas').value;
+  if(!kelas){ document.getElementById('cardLD').style.display='none'; return; }
+  renderLD(kelas);
+  refreshCP();
+  checkBtn();
+}
+
+function onMapelChange(){ refreshCP(); checkBtn(); }
+
+function refreshCP(){
+  const kelas = document.getElementById('selKelas').value;
+  const mapel = document.getElementById('selMapel').value;
+  const card = document.getElementById('cardCP');
+  const body = document.getElementById('cpBody');
+  if(!mapel){ card.style.display='none'; return; }
+  card.style.display='block';
+  const fase = kelas ? FASE[kelas] : null;
+  const data = CP[mapel];
+  if(!data){ body.innerHTML='<div style="color:var(--gray-500);font-size:12px">Data CP belum tersedia.</div>'; return; }
+  const fk = fase ? fase.toLowerCase() : 'b';
+  body.innerHTML = data.rows.map(r=>{
+    const t = r[fk] || r.b || r.c || null;
+    if(!t) return '';
+    return `<div class="cp-item"><div class="cp-el">${r.el}</div><div class="cp-text">${t}</div></div>`;
+  }).join('');
+}
+
+function renderLD(kelas){
+  const data = LD[kelas];
+  if(!data){ document.getElementById('cardLD').style.display='none'; return; }
+  document.getElementById('cardLD').style.display='block';
+  selInds.clear();
+  let html='';
+  PILAR.forEach(p=>{
+    const groups = data[p.key]||[];
+    html+=`<div class="pilar-section"><div class="pilar-head ${p.head}">${p.label}</div><div class="pills-wrap">`;
+    groups.forEach(g=>{
+      g.i.forEach(ind=>{
+        const id=encodeURIComponent(`${p.key}|${g.v}|${ind}`);
+        html+=`<div class="pill ${p.pill}" id="p-${id}" onclick="togglePill('${id}')"><span class="pill-dot">○</span>${ind}</div>`;
+      });
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('ldBody').innerHTML=html;
+}
+
+function togglePill(id){
+  const el=document.getElementById('p-'+id);
+  if(!el) return;
+  if(selInds.has(id)){ selInds.delete(id); el.classList.remove('sel'); el.querySelector('.pill-dot').textContent='○'; }
+  else { selInds.add(id); el.classList.add('sel'); el.querySelector('.pill-dot').textContent='✓'; }
+  checkBtn();
+}
+
+function checkBtn(){
+  const ok = document.getElementById('selKelas').value && document.getElementById('selMapel').value && document.getElementById('inpTopik').value.trim() && !busy;
+  document.getElementById('btnGen').disabled = !ok;
+}
+document.getElementById('inpTopik').addEventListener('input', checkBtn);
+
+// ── Generate ───────────────────────────────────────────
+async function doGenerate(){
+  const kelas = document.getElementById('selKelas').value;
+  const mapel = document.getElementById('selMapel').value;
+  const topik = document.getElementById('inpTopik').value.trim();
+  const waktu = document.getElementById('inpWaktu').value.trim() || '2 × 35 menit';
+  const sem   = document.getElementById('selSem').value;
+  const tujuan= document.getElementById('inpTujuan').value.trim();
+  const fase  = FASE[kelas];
+
+  // Collect CP
+  const cpData = CP[mapel];
+  const fk = fase.toLowerCase();
+  const cpText = cpData ? cpData.rows.map(r=>{
+    const t=r[fk]||r.b||r.c; return t?`- ${r.el}: ${t}`:null;
+  }).filter(Boolean).join('\n') : '';
+
+  // Collect selected indicators
+  const byPilar = {s:[],a:[],l:[]};
+  selInds.forEach(id=>{
+    const [pk,val,ind]=decodeURIComponent(id).split('|');
+    byPilar[pk].push({val,ind});
+  });
+
+  const fmtPilar = (key,label)=> byPilar[key].length
+    ? `${label}:\n${byPilar[key].map(x=>`• [${x.val}] ${x.ind}`).join('\n')}`:'';
+
+  const indText = [
+    fmtPilar('s','SPIRITUAL VALUES'),
+    fmtPilar('a','ACADEMIC'),
+    fmtPilar('l','LEADERSHIP COMPETENCIES')
+  ].filter(Boolean).join('\n\n');
+
+  const prompt = `Buatkan MODUL AJAR lengkap sesuai format Kurikulum Merdeka 2025 dengan data berikut:
+
+IDENTITAS:
+- Sekolah: SDIT Ar-Rahmah Makassar
+- Mata Pelajaran: ${mapel}
+- Kelas/Fase: ${kelas} / Fase ${fase}
+- Semester: ${sem} | Alokasi: ${waktu}
+- Topik: ${topik}
+- Tahun Pelajaran: 2025/2026
+
+CAPAIAN PEMBELAJARAN:
+${cpText || '(lihat dokumen CP resmi)'}
+
+${indText ? `INDIKATOR LEADERSHIP CURRICULUM AR-RAHMAH (dipilih guru):
+${indText}
+
+Integrasikan indikator di atas ke dalam kegiatan pembelajaran secara natural dan bermakna.` : 'Sisipkan nilai karakter Islami dan leadership yang relevan dengan topik.'}
+
+${tujuan ? `TUJUAN PEMBELAJARAN (dari guru):\n${tujuan}` : 'Rumuskan Tujuan Pembelajaran yang sesuai CP dan fase dengan kata kerja operasional.'}
+
+Struktur Modul Ajar:
+## 1. IDENTITAS MODUL
+(tabel: Sekolah, Mapel, Kelas, Fase, Semester, Alokasi Waktu, Topik, TP 2025/2026)
+
+## 2. CAPAIAN PEMBELAJARAN
+
+## 3. TUJUAN PEMBELAJARAN
+
+## 4. PROFIL PELAJAR PANCASILA
+
+## 5. INTEGRASI LEADERSHIP CURRICULUM AR-RAHMAH
+(tabel: Pilar | Values | Indikator | Strategi Integrasi dalam Pembelajaran)
+
+## 6. SARANA & PRASARANA
+
+## 7. KEGIATAN PEMBELAJARAN
+### Pendahuluan (10 menit)
+### Kegiatan Inti (... menit)
+### Penutup (10 menit)
+(Detail tiap langkah, tandai momen integrasi leadership dengan **[Leadership]:**)
+
+## 8. ASESMEN
+### Asesmen Formatif
+### Asesmen Sumatif
+### Rubrik Penilaian Leadership
+
+## 9. REFLEKSI GURU
+
+## 10. LAMPIRAN: LKPD
+(Lembar Kerja Peserta Didik yang sesuai topik)`;
+
+  // UI loading
+  busy=true; checkBtn();
+  document.getElementById('genIcon').textContent='⏳';
+  document.getElementById('genLabel').textContent='Sedang menyusun...';
+  document.getElementById('outputBox').innerHTML=`
+    <div class="loading">
+      <div class="spin"></div>
+      <p>Menyusun Modul Ajar<br><strong>${kelas} · ${mapel}</strong><br><em>${topik}</em></p>
+    </div>`;
+
+  try{
+    const res = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({prompt})
+    });
+    if(!res.ok){ const e=await res.text(); throw new Error(`Server error: ${e}`); }
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    renderResult(data.result, kelas, mapel, topik);
+  } catch(err){
+    document.getElementById('outputBox').innerHTML=`
+      <div class="out-empty">
+        <div class="out-empty-icon">⚠️</div>
+        <div class="out-empty-title">Gagal generate</div>
+        <div class="out-empty-sub">${err.message}</div>
+      </div>`;
+  } finally{
+    busy=false; checkBtn();
+    document.getElementById('genIcon').textContent='✨';
+    document.getElementById('genLabel').textContent='Generate Modul Ajar';
+  }
+}
+
+function renderResult(md, kelas, mapel, topik){
+  const now=new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('outputBox').innerHTML=`
+    <div class="out-head">
+      <div><div class="out-title">Modul Ajar — ${mapel} · ${kelas}</div>
+      <div class="out-sub">Topik: ${topik} · Dibuat ${now}</div></div>
+      <div class="out-actions" id="actBtns">
+        <button class="btn-act btn-cp" onclick="doCopy()">⎘ Salin</button>
+        <button class="btn-act btn-pr" onclick="window.print()">🖨 Cetak</button>
+      </div>
+    </div>
+    <div class="out-body" id="outBody"></div>`;
+  document.getElementById('outBody').innerHTML = mdToHtml(md);
+}
+
+function mdToHtml(t){
+  const lines=t.split('\n');
+  let html='',ul=false,ol=false;
+  const close=()=>{if(ul){html+='</ul>';ul=false;}if(ol){html+='</ol>';ol=false;}};
+  const fmt=s=>s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>');
+  lines.forEach(l=>{
+    if(/^# /.test(l)){close();html+=`<h1>${fmt(l.slice(2))}</h1>`;}
+    else if(/^## /.test(l)){close();html+=`<h2>${fmt(l.slice(3))}</h2>`;}
+    else if(/^### /.test(l)){close();html+=`<h3>${fmt(l.slice(4))}</h3>`;}
+    else if(/^\|/.test(l)){
+      close();
+      if(l.replace(/[\s|:-]/g,'')===''){return;}
+      const cells=l.split('|').slice(1,-1).map(c=>`<td>${fmt(c.trim())}</td>`).join('');
+      html+=`<table><tr>${cells}</tr></table>`;
+    }
+    else if(/^[-*] /.test(l)){if(!ul){html+='<ul>';ul=true;}html+=`<li>${fmt(l.slice(2))}</li>`;}
+    else if(/^\d+\. /.test(l)){if(!ol){html+='<ol>';ol=true;}html+=`<li>${fmt(l.replace(/^\d+\. /,''))}</li>`;}
+    else if(l.trim()===''){close();html+='<br>';}
+    else{close();html+=`<p>${fmt(l)}</p>`;}
+  });
+  close();
+  // Merge consecutive table rows properly
+  return html.replace(/<\/table><table>/g,'');
+}
+
+function doCopy(){
+  const t=document.getElementById('outBody')?.innerText||'';
+  navigator.clipboard?.writeText(t).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);});
+  toast('Modul Ajar berhasil disalin ke clipboard ✓');
+  const btn=event.target;const o=btn.innerHTML;btn.innerHTML='✓ Tersalin!';setTimeout(()=>btn.innerHTML=o,2000);
+}
+
+let _tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  clearTimeout(_tt);el.textContent=msg;el.classList.add('show');
+  _tt=setTimeout(()=>el.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
